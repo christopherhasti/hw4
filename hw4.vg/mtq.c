@@ -30,8 +30,9 @@ Mtq mtq_new(int capacity) {
 void mtq_free(Mtq q) {
     if (!q) return;
     
-    // Clean up the underlying MT-unsafe queue
-    deq_free(q->deq);
+    // We pass 0 (NULL) as the second argument because the consumer threads 
+    // already extract and free the Moles via mole_whack().
+    deq_del(q->deq, 0); 
     
     // Destroy MT primitives
     pthread_mutex_destroy(&q->lock);
